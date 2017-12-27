@@ -1,0 +1,18 @@
+ul{
+
+    list-style-type: square;
+}
+
+ul li{
+
+    color: rgb(250, 71, 0);
+    font-size: 1.6em;
+    cursor: pointer;
+    padding: 10px;
+    
+}
+
+ul li:hover{
+
+    color: red;
+}

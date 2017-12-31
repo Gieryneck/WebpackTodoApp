@@ -1,3 +1,6 @@
+// module.exports ZAWSZE definiujemy na koncu skryptu. W tym wypadku kolejność deklaracji MA ZNACZENIE
+
+
 const path = require('path');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var webpack = require('webpack'); // potrzebny do UglifyJSPlugin
@@ -10,9 +13,41 @@ var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 var OptimizeJsPlugin = require('optimize-js-plugin');
 
 
+// PONIZEJ: jesli wklepiemy  NODE_ENV=production npm start to dolaczymy dwa pluginy optymalizacyjne
+// ktore sa nam potrzebne tylko w srodowisku "start": "webpack-dev-server --inline --hot --config ./webpack.config.js",produkcyjnym. 
+// dzieki takiemu rozroznianiu srodowisk oszczedzamy czas nie kompilujac niepotrzebnych w danym momencie rzeczy
+
+var env = process.env.NODE_ENV || 'development';
+var plugins = [
+new HtmlWebpackPlugin({
+        template: 'src/index.html',
+        filename: 'index.html',
+        inject: 'body',
+    })
+];
+
+console.log('NODE_ENV:', env);
+
+if (env === 'production') {
+
+plugins.push(
+    new webpack.optimize.UglifyJsPlugin(),
+    new OptimizeJsPlugin({
+      sourceMap: false
+    })
+  );
+}
+
+
+
 module.exports = {
 
-    entry: './src/index.js',
+    devtool: 'eval-source-map', // powoduje cross origin error, ale to nic. za to bledy sa wskazywane sensowniej
+    
+    entry: [
+        'react-hot-loader/patch',
+        './src/index.js'
+    ],
 
     output: {
 
@@ -30,13 +65,20 @@ module.exports = {
             },
 
             {
-                test: /\.css$/,
+                test: /\.sass$/,
                 use: [
                     
                     { loader: 'style-loader'},
 
                     {
                         loader: 'css-loader',
+                        options: {
+
+                            modules: true
+                        }
+                    },
+
+                    { loader: 'sass-loader',
                         options: {
 
                             modules: true
@@ -57,36 +99,13 @@ module.exports = {
         ]
     },
 
-    devServer: {
-        publicPath: "/",
-        hot: true
-    },  
-
-
+    plugins: plugins // pluginy musimy zdefiniowac w module.exports
 }
 
-// PONIZEJ: jesli wklepiemy  NODE_ENV=production npm start to dolaczymy dwa pluginy optymalizacyjne
-// ktore sa nam potrzebne tylko w srodowisku produkcyjnym. 
-// dzieki takiemu rozroznianiu srodowisk oszczedzamy czas nie kompilujac niepotrzebnych w danym momencie rzeczy
 
 
-var env = process.env.NODE_ENV || 'development';
-var plugins = [
-new HtmlWebpackPlugin({
-        template: 'src/index.html',
-        filename: 'index.html',
-        inject: 'body',
-    })
-];
 
-console.log('NODE_ENV:', env);
 
-if (env === 'production') {
-plugins.push(
-    new webpack.optimize.UglifyJsPlugin(),
-    new OptimizeJsPlugin({
-      sourceMap: false
-    })
-  );
-}
+
+
 

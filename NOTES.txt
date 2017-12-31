@@ -1,0 +1,35 @@
+Automatic Refresh
+
+
+The webpack-dev-server supports multiple modes to automatically refresh the page:
+
+-Iframe mode (page is embedded in an iframe and reloaded on change),
+
+-Inline mode (a small webpack-dev-server client entry is added to the bundle which refreshes the page on change)
+
+
+
+
+The easiest way to use Hot Module Replacement with the webpack-dev-server is to use the inline mode.
+
+Hot Module Replacement with Inline mode on CLI:
+
+Adding flags --inline --hot like this: "start": "webpack-dev-server --inline --hot --config ./webpack.config.js"
+does all the relevant work automatically.
+The CLI of the webpack-dev-server automatically adds the special 
+webpack/hot/dev-server entry point to your configuration.
+
+
+
+
+
+Inne metody Hot Module Replacement:
+
+-konfiguracja za pomoc� wtyczki HotModuleReplacement
+
+-u�ycie tzw. middleware, czyli oprogramowania po�rednicz�cego, kt�re umo�liwia komunikacj� mi�dzy
+ Expressem a Webpackiem
+
+
+
+ 
